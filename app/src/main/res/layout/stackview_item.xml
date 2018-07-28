@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/sv_linear_container">
+
+    <TextView
+        android:id="@+id/sv_recipe_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#c48b9f"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Click to see more!"
+        android:background="@android:color/white"
+        android:textColor="#c48b9f"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/sv_ingredient_list"
+        android:padding="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/stackview"
+        android:isScrollContainer="true"/>
+
+</LinearLayout>

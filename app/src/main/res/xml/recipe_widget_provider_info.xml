@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/recipe_widget_provider"
-    android:initialLayout="@layout/recipe_widget_provider"
-    android:minHeight="110dp"
-    android:minWidth="110dp"
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/widget_stackview_provider"
+    android:minHeight="160dp"
+    android:minWidth="200dp"
     android:previewImage="@drawable/example_appwidget_preview"
-    android:resizeMode="vertical"
+    android:resizeMode="vertical|horizontal"
     android:updatePeriodMillis="0"
-    android:autoAdvanceViewId="@+id/appwidget_text"
+    android:autoAdvanceViewId="@+id/widget_stack_view"
     android:widgetCategory="home_screen"/>

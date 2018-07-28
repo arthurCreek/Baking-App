@@ -25,21 +25,20 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 //         There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
+
             Intent intent = new Intent(context, RecipeWidgetRemoteViewsService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-            views.setRemoteAdapter(R.id.appwidget_text, intent);
+
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_stackview_provider);
+            views.setRemoteAdapter(R.id.widget_stack_view, intent);
 
             Intent activityIntent = new Intent(context, RecipeActivity.class);
             activityIntent.setAction(START_ACTIVITY);
             activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activityIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setPendingIntentTemplate(R.id.appwidget_text, pendingIntent);
-//            Intent startActivityIntent = new Intent(context, RecipeActivity.class);
-//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//            views.setPendingIntentTemplate(R.id.appwidget_text, pendingIntent);
+            views.setPendingIntentTemplate(R.id.widget_stack_view, pendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
