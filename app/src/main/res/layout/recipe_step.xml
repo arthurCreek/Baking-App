@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/navigation_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -44,6 +45,17 @@
         android:visibility="gone">
 
     </com.google.android.exoplayer2.ui.PlayerView>
+
+    <TextView
+        android:id="@+id/no_internet_exo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No internet connection"
+        android:gravity="center"
+        android:padding="32dp"
+        android:background="#fce4ec"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/videoUrlTextView"

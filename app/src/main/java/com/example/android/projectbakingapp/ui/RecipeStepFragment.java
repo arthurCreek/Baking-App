@@ -2,15 +2,20 @@ package com.example.android.projectbakingapp.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +62,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     private ImageView previousStep;
     private ImageView nextStep;
     private TextView stepIdTextView;
+    private TextView noInternetExo;
 
     private boolean startAutoPlay;
     private int startWindow;
@@ -64,6 +70,8 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
     SimpleIdlingResource simpleIdlingResource;
     private RecipeActivity recipeActivity;
+
+    private static final String STARTING_POSITION = "player_position";
 
     public RecipeStepFragment() {
     }
@@ -83,13 +91,17 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         if (simpleIdlingResource != null){
             simpleIdlingResource.setIdleState(false);
         }
+
+        if (savedInstanceState != null){
+            startPosition = savedInstanceState.getLong(STARTING_POSITION);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView;
+        View rootView = null;
 
 
         if (stepId == 0){
@@ -144,14 +156,20 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             TextView videoUrlTextView = (TextView) rootView.findViewById(R.id.videoUrlTextView);
             descriptionTextView.setText(recipe.getStepList().get(stepId-1).getLongDescription());
             videoUrlTextView.setText(recipe.getStepList().get(stepId-1).getVideoUrl());
-            if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
-                urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
-                playerView.setVisibility(View.VISIBLE);
-                initializePlayer();
-            } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
-                urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
-                playerView.setVisibility(View.VISIBLE);
-                initializePlayer();
+            if (isOnline()){
+                if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
+                    urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
+                    playerView.setVisibility(View.VISIBLE);
+                    initializePlayer();
+                } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
+                    urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
+                    playerView.setVisibility(View.VISIBLE);
+                    initializePlayer();
+                }
+            } else if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")
+                    || !recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
+                noInternetExo = (TextView) rootView.findViewById(R.id.no_internet_exo);
+                noInternetExo.setVisibility(View.VISIBLE);
             }
         }
 
@@ -185,18 +203,42 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Override
     public void onStart() {
         super.onStart();
-//        if (Util.SDK_INT > 23 && player != null) {
-//            initializePlayer();
-//        }
+        if (Util.SDK_INT > 23 && player != null) {
+            initializePlayer();
+            if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                hideSystemUi();
+                //First Hide other objects (listview or recyclerview), better hide them using Gone.
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+                params.width=params.MATCH_PARENT;
+                params.height=params.MATCH_PARENT;
+                playerView.setLayoutParams(params);
+                previousStep.setVisibility(View.GONE);
+                nextStep.setVisibility(View.GONE);
+                stepIdTextView.setVisibility(View.GONE);
+            }
+            player.setPlayWhenReady(true);
+            player.seekTo(startPosition);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        hideSystemUi();
-//        if ((Util.SDK_INT <= 23 && player != null)) {
-//            initializePlayer();
-//        }
+        if ((Util.SDK_INT <= 23 && player != null)) {
+            initializePlayer();
+            if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                hideSystemUi();
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+                params.width=params.MATCH_PARENT;
+                params.height=params.MATCH_PARENT;
+                playerView.setLayoutParams(params);
+                previousStep.setVisibility(View.GONE);
+                nextStep.setVisibility(View.GONE);
+                stepIdTextView.setVisibility(View.GONE);
+            }
+            player.setPlayWhenReady(true);
+            player.seekTo(startPosition);
+        }
     }
 
     @SuppressLint("InlinedApi")
@@ -213,6 +255,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     public void onPause() {
         super.onPause();
         if (player != null){
+            startPosition = player.getCurrentPosition();
             if (Util.SDK_INT <= 23) {
                 releasePlayer();
             }
@@ -224,6 +267,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         super.onStop();
         if (player != null){
             if (Util.SDK_INT > 23) {
+                startPosition = player.getCurrentPosition();
                 releasePlayer();
             }
         }
@@ -262,5 +306,17 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         mCallback = null;
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(STARTING_POSITION, startPosition);
+    }
 }
