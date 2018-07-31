@@ -26,6 +26,7 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
     private int recipeServings;
     private ArrayList<String> viewHolderArray;
     private RecipeDetailListFragment.OnDetailListFragmentInteraction mListener;
+    private static boolean ADD_BACKSTACK = true;
 
     public RecipeDetailListAdapter(Recipe recipe, RecipeDetailListFragment.OnDetailListFragmentInteraction mListener) {
         this.recipeId = recipe.getRecipeId();
@@ -67,7 +68,7 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onDetailListFragmentInteraction(recipeId, position);
+                mListener.onDetailListFragmentInteraction(recipeId, position, ADD_BACKSTACK);
             }
         });
     }

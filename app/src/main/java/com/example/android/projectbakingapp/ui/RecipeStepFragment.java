@@ -1,6 +1,7 @@
 package com.example.android.projectbakingapp.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.android.projectbakingapp.Query.QueryUtils;
@@ -28,18 +31,32 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
-public class RecipeStepFragment extends android.support.v4.app.Fragment {
+public class RecipeStepFragment extends android.support.v4.app.Fragment{
+
+    public static final String LOG_TAG = RecipeStepFragment.class.getSimpleName();
+
+    private static final int PREVIOUS_ID = 0;
+    private static final int NEXT_ID = 1;
+
+    //TODO move these to strings.xml
+    private static final String STEP_TEXT = "Step ";
+    private static final String INGREDIENTS = "Ingredients";
 
     private ArrayList<Recipe> recipeArrayList;
     private Recipe recipe;
     private int stepId;
     private int recipeId;
+    private int recipeSize;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecipeIngredientAdapter recipeIngredientAdapter;
     private PlayerView playerView;
     private SimpleExoPlayer player;
     private String urlString;
+    private OnStepNavigationClicked mCallback;
+    private ImageView previousStep;
+    private ImageView nextStep;
+    private TextView stepIdTextView;
 
     private boolean startAutoPlay;
     private int startWindow;
@@ -59,6 +76,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment {
         stepId = bundle.getInt("stepId");
         recipeId = bundle.getInt("recipeId");
         recipe = recipeArrayList.get(recipeId-1);
+        recipeSize = recipe.getStepList().size();
 
         recipeActivity = (RecipeActivity) getActivity();
         simpleIdlingResource = (SimpleIdlingResource) recipeActivity.getIdlingResource();
@@ -73,9 +91,23 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment {
 
         View rootView;
 
+
         if (stepId == 0){
             rootView = inflater.inflate(R.layout.rv_ingredient_list, container, false);
             recyclerView = (RecyclerView) rootView.findViewById(R.id.rvIngredientList);
+
+            previousStep = (ImageView) rootView.findViewById(R.id.previous_step);
+            nextStep = (ImageView) rootView.findViewById(R.id.next_step);
+            stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
+
+            previousStep.setVisibility(View.INVISIBLE);
+            stepIdTextView.setText(INGREDIENTS);
+            nextStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mCallback.onStepClicked(stepId, recipeId, NEXT_ID);
+                }
+            });
 
             linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
@@ -84,6 +116,29 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment {
             recyclerView.setAdapter(recipeIngredientAdapter);
         } else {
             rootView = inflater.inflate(R.layout.recipe_step, container, false);
+            previousStep = (ImageView) rootView.findViewById(R.id.previous_step);
+            nextStep = (ImageView) rootView.findViewById(R.id.next_step);
+            stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
+
+            previousStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mCallback.onStepClicked(stepId, recipeId, PREVIOUS_ID);
+                }
+            });
+            String stepIdString = STEP_TEXT + stepId;
+            stepIdTextView.setText(stepIdString);
+            if (stepId < recipeSize){
+                nextStep.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallback.onStepClicked(stepId, recipeId, NEXT_ID);
+                    }
+                });
+            } else {
+                nextStep.setVisibility(View.INVISIBLE);
+            }
+
             playerView = (PlayerView) rootView.findViewById(R.id.playerView);
             TextView descriptionTextView = (TextView) rootView.findViewById(R.id.longDescriptionTextView);
             TextView videoUrlTextView = (TextView) rootView.findViewById(R.id.videoUrlTextView);
@@ -183,4 +238,29 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment {
             player = null;
         }
     }
+
+
+    public interface OnStepNavigationClicked{
+        public void onStepClicked(int stepId, int recipeId, int stepDirection);
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnStepNavigationClicked) {
+            mCallback = (OnStepNavigationClicked) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnDetailListFragmentInteraction");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback = null;
+    }
+
+
 }

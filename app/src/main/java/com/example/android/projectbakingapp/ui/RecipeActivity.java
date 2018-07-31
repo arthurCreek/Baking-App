@@ -16,9 +16,15 @@ import com.example.android.projectbakingapp.Recipe;
 import com.example.android.projectbakingapp.RecipeWidgetProvider;
 import com.example.android.projectbakingapp.ui.RecipeListFragment.OnListFragmentInteractionListener;
 
-public class RecipeActivity extends AppCompatActivity implements OnListFragmentInteractionListener, RecipeDetailListFragment.OnDetailListFragmentInteraction{
+public class RecipeActivity extends AppCompatActivity
+        implements OnListFragmentInteractionListener,
+        RecipeDetailListFragment.OnDetailListFragmentInteraction, RecipeStepFragment.OnStepNavigationClicked{
 
     private static int INGREDIENT_INDEX = 0;
+    private static int PREVIOUS_ID = 0;
+    private static int NEXT_ID = 1;
+    private static boolean DONT_ADD_BACKSTACK = false;
+    private static boolean ADD_BACKSTACK = true;
     SimpleIdlingResource simpleIdlingResource;
 
     protected boolean wasLaunchedFromRecents() {
@@ -50,7 +56,7 @@ public class RecipeActivity extends AppCompatActivity implements OnListFragmentI
             if (extras != null && !wasLaunchedFromRecents()){
                 int widgetIndexPosition = extras.getInt(RecipeWidgetProvider.EXTRA_ITEM);
                 onListFragmentInteraction(QueryUtils.extractRecipes(this).get(widgetIndexPosition));
-                onDetailListFragmentInteraction(widgetIndexPosition+1, INGREDIENT_INDEX);
+                onDetailListFragmentInteraction(widgetIndexPosition+1, INGREDIENT_INDEX, ADD_BACKSTACK);
             }
         }
     }
@@ -71,10 +77,13 @@ public class RecipeActivity extends AppCompatActivity implements OnListFragmentI
     }
 
     @Override
-    public void onDetailListFragmentInteraction(int recipeId, int stepPosition) {
+    public void onDetailListFragmentInteraction(int recipeId, int stepPosition, boolean addBackStack) {
         Toast.makeText(this, String.valueOf(stepPosition), Toast.LENGTH_SHORT).show();
         FragmentTransaction fragmentTransaction3 = getSupportFragmentManager().beginTransaction();
         RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1){
+            getSupportFragmentManager().popBackStack();
+        }
         fragmentTransaction3.replace(R.id.displayList, recipeStepFragment, "Recipe_Step");
         fragmentTransaction3.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction3.addToBackStack(null);
@@ -84,4 +93,14 @@ public class RecipeActivity extends AppCompatActivity implements OnListFragmentI
         recipeStepFragment.setArguments(stepBundle);
         fragmentTransaction3.commit();
     }
+
+    @Override
+    public void onStepClicked(int stepId, int recipeId, int stepDirection) {
+        if (stepDirection == PREVIOUS_ID){
+            onDetailListFragmentInteraction(recipeId, stepId-1, DONT_ADD_BACKSTACK);
+        } else if (stepDirection == NEXT_ID){
+            onDetailListFragmentInteraction(recipeId, stepId+1, DONT_ADD_BACKSTACK);
+        }
+    }
+
 }

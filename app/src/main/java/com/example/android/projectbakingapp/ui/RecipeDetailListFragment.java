@@ -74,6 +74,6 @@ public class RecipeDetailListFragment extends Fragment {
     }
 
     public interface OnDetailListFragmentInteraction {
-        void onDetailListFragmentInteraction(int recipeId, int stepPosition);
+        void onDetailListFragmentInteraction(int recipeId, int stepPosition, boolean addBackstack);
     }
 }
