@@ -28,6 +28,7 @@ public class RecipeActivity extends AppCompatActivity
     private static boolean DONT_ADD_BACKSTACK = false;
     private static boolean ADD_BACKSTACK = true;
     SimpleIdlingResource simpleIdlingResource;
+    private boolean mTwoPane;
 
     protected boolean wasLaunchedFromRecents() {
         return (getIntent().getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) == Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY;
@@ -49,7 +50,26 @@ public class RecipeActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         getIdlingResource();
 
-        if (savedInstanceState == null){
+        if (findViewById(R.id.landscape_linear_layout) != null){
+            mTwoPane = true;
+
+            if (savedInstanceState == null){
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                RecipeListFragment recipeListFragment = new RecipeListFragment();
+                fragmentTransaction.add(R.id.detail_and_step_list, recipeListFragment, "Recipe__List");
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+                if (extras != null && !wasLaunchedFromRecents()){
+                    int widgetIndexPosition = extras.getInt(RecipeWidgetProvider.EXTRA_ITEM);
+                    onListFragmentInteraction(QueryUtils.extractRecipes(this).get(widgetIndexPosition));
+                    onDetailListFragmentInteraction(widgetIndexPosition+1, INGREDIENT_INDEX, ADD_BACKSTACK);
+                }
+            }
+        } else {
+            mTwoPane = false;
+        }
+
+        if (savedInstanceState == null && !mTwoPane){
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             RecipeListFragment recipeListFragment = new RecipeListFragment();
             fragmentTransaction.add(R.id.displayList, recipeListFragment, "Recipe__List");
@@ -68,7 +88,11 @@ public class RecipeActivity extends AppCompatActivity
         Toast.makeText(this, recipe.getRecipeName(), Toast.LENGTH_SHORT).show();
         FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
         RecipeDetailListFragment recipeDetailListFragment = new RecipeDetailListFragment();
-        fragmentTransaction2.replace(R.id.displayList, recipeDetailListFragment, "Recipe_Detail_List");
+        if (mTwoPane){
+            fragmentTransaction2.replace(R.id.detail_and_step_list, recipeDetailListFragment, "Recipe_Detail_List");
+        } else {
+            fragmentTransaction2.replace(R.id.displayList, recipeDetailListFragment, "Recipe_Detail_List");
+        }
         fragmentTransaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction2.addToBackStack(null);
         Bundle bundle = new Bundle();
@@ -86,9 +110,13 @@ public class RecipeActivity extends AppCompatActivity
         if (getSupportFragmentManager().getBackStackEntryCount() > 1){
             getSupportFragmentManager().popBackStack();
         }
-        fragmentTransaction3.replace(R.id.displayList, recipeStepFragment, "Recipe_Step");
+        if (mTwoPane){
+            fragmentTransaction3.replace(R.id.media_description_landscape, recipeStepFragment, "Recipe_Step");
+        } else {
+            fragmentTransaction3.replace(R.id.displayList, recipeStepFragment, "Recipe_Step");
+            fragmentTransaction3.addToBackStack(null);
+        }
         fragmentTransaction3.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction3.addToBackStack(null);
         Bundle stepBundle = new Bundle();
         stepBundle.putInt("stepId", stepPosition);
         stepBundle.putInt("recipeId", recipeId);
@@ -103,6 +131,15 @@ public class RecipeActivity extends AppCompatActivity
         } else if (stepDirection == NEXT_ID){
             onDetailListFragmentInteraction(recipeId, stepId+1, DONT_ADD_BACKSTACK);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mTwoPane && getSupportFragmentManager().findFragmentByTag("Recipe_Step") != null){
+            getSupportFragmentManager().beginTransaction().
+                    remove(getSupportFragmentManager().findFragmentById(R.id.media_description_landscape)).commit();
+        }
+        else super.onBackPressed();
     }
 
 }

@@ -63,6 +63,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     private ImageView nextStep;
     private TextView stepIdTextView;
     private TextView noInternetExo;
+    private boolean mTwoPane;
 
     private boolean startAutoPlay;
     private int startWindow;
@@ -85,6 +86,11 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         recipeId = bundle.getInt("recipeId");
         recipe = recipeArrayList.get(recipeId-1);
         recipeSize = recipe.getStepList().size();
+        if (getActivity().findViewById(R.id.landscape_linear_layout) != null){
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
 
         recipeActivity = (RecipeActivity) getActivity();
         simpleIdlingResource = (SimpleIdlingResource) recipeActivity.getIdlingResource();
@@ -204,7 +210,9 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         if (Util.SDK_INT > 23 && player != null) {
             initializePlayer();
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                hideSystemUi();
+                if (!mTwoPane){
+                    hideSystemUi();
+                }
                 //First Hide other objects (listview or recyclerview), better hide them using Gone.
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
                 params.width=params.MATCH_PARENT;
@@ -225,7 +233,9 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         if ((Util.SDK_INT <= 23 && player != null)) {
             initializePlayer();
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                hideSystemUi();
+                if (!mTwoPane){
+                    hideSystemUi();
+                }
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
                 params.width=params.MATCH_PARENT;
                 params.height=params.MATCH_PARENT;
