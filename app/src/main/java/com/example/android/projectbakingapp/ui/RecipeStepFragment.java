@@ -153,9 +153,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
             playerView = (PlayerView) rootView.findViewById(R.id.playerView);
             TextView descriptionTextView = (TextView) rootView.findViewById(R.id.longDescriptionTextView);
-            TextView videoUrlTextView = (TextView) rootView.findViewById(R.id.videoUrlTextView);
             descriptionTextView.setText(recipe.getStepList().get(stepId-1).getLongDescription());
-            videoUrlTextView.setText(recipe.getStepList().get(stepId-1).getVideoUrl());
             if (isOnline()){
                 if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
                     urlString = recipe.getStepList().get(stepId-1).getVideoUrl();

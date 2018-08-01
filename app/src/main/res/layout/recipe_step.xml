@@ -58,13 +58,9 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/videoUrlTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
         android:id="@+id/longDescriptionTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="16dp"/>
 
 </LinearLayout>
