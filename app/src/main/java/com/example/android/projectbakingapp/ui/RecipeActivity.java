@@ -1,14 +1,10 @@
 package com.example.android.projectbakingapp.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.support.test.espresso.IdlingResource;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
@@ -50,7 +46,7 @@ public class RecipeActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         getIdlingResource();
 
-        if (findViewById(R.id.landscape_linear_layout) != null){
+        if (findViewById(R.id.landscape_linear_layout) != null || findViewById(R.id.portrait_linear_layout) != null){
             mTwoPane = true;
 
             if (savedInstanceState == null){
@@ -111,7 +107,7 @@ public class RecipeActivity extends AppCompatActivity
             getSupportFragmentManager().popBackStack();
         }
         if (mTwoPane){
-            fragmentTransaction3.replace(R.id.media_description_landscape, recipeStepFragment, "Recipe_Step");
+            fragmentTransaction3.replace(R.id.media_description_tablet, recipeStepFragment, "Recipe_Step");
         } else {
             fragmentTransaction3.replace(R.id.displayList, recipeStepFragment, "Recipe_Step");
             fragmentTransaction3.addToBackStack(null);
@@ -137,7 +133,7 @@ public class RecipeActivity extends AppCompatActivity
     public void onBackPressed() {
         if (mTwoPane && getSupportFragmentManager().findFragmentByTag("Recipe_Step") != null){
             getSupportFragmentManager().beginTransaction().
-                    remove(getSupportFragmentManager().findFragmentById(R.id.media_description_landscape)).commit();
+                    remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
         }
         else super.onBackPressed();
     }
