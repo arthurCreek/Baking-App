@@ -5,4 +5,20 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    //RecipeDetailListAdapter
+    <string name="recipe_ingredients">Recipe Ingredients</string>
+
+    //RecipeIngredientAdapter
+    <string name="ingredients">Ingredients</string>
+    <string name="quantity">Quantity</string>
+
+    //RecipeStepFragment
+    <string name="step">Step</string>
+
+    //RecipeWidgetsRemoteViewsFactory
+    <string name="preview">Preview</string>
+
+    //RecipeListAdapter
+    <string name="servings">Servings</string>
 </resources>

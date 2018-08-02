@@ -26,6 +26,7 @@ public class RecipeDetailListFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private RecipeDetailListAdapter recipeDetailListAdapter;
     private OnDetailListFragmentInteraction mListener;
+    private static final String ID_BUNDLE = "id";
 
     public RecipeDetailListFragment() {
     }
@@ -36,7 +37,7 @@ public class RecipeDetailListFragment extends Fragment {
 
         ArrayList<Recipe> recipes = QueryUtils.extractRecipes(getContext());
         Bundle bundle = this.getArguments();
-        int recipeIdBundleArg = bundle.getInt("id");
+        int recipeIdBundleArg = bundle.getInt(ID_BUNDLE);
         recipe = recipes.get(recipeIdBundleArg-1);
     }
 
@@ -51,7 +52,7 @@ public class RecipeDetailListFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        recipeDetailListAdapter = new RecipeDetailListAdapter(recipe, mListener);
+        recipeDetailListAdapter = new RecipeDetailListAdapter(recipe, mListener, getContext());
         recyclerView.setAdapter(recipeDetailListAdapter);
 
 

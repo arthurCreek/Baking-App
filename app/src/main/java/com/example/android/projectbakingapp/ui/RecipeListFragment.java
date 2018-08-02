@@ -26,8 +26,6 @@ import java.util.ArrayList;
  */
 public class RecipeListFragment extends Fragment {
 
-    public static final String LOG_TAG = RecipeListFragment.class.getSimpleName();
-
     private ArrayList<Recipe> recipeArrayList;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;

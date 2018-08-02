@@ -17,9 +17,13 @@ import java.util.ArrayList;
 public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientAdapter.RecipeIngredientHolder> {
 
     private ArrayList<Ingredient> ingredientArrayList;
+    private String ingredients;
+    private String quantity;
+    Context context;
 
-    public RecipeIngredientAdapter(Recipe recipe) {
-        ingredientArrayList = recipe.getIngredientsList();
+    public RecipeIngredientAdapter(Recipe recipe, Context context) {
+        this.ingredientArrayList = recipe.getIngredientsList();
+        this.context = context;
     }
 
     @NonNull
@@ -44,13 +48,13 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
         Ingredient ingredient = ingredientArrayList.get(position);
         String ingredientString;
         StringBuilder ingredientBuilder = new StringBuilder();
-        ingredientBuilder.append("Ingredient(s):\n");
+        ingredientBuilder.append(context.getResources().getString(R.string.ingredients) + ":\n");
         ingredientBuilder.append(ingredient.getIngredients());
         ingredientString = ingredientBuilder.toString();
         holder.ingredientTesxtView.setText(ingredientString);
         String measureString;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Quantity:\n");
+        stringBuilder.append(context.getResources().getString(R.string.quantity) + ":\n");
         stringBuilder.append(ingredient.getIngredientQuantity());
         stringBuilder.append(" ");
         stringBuilder.append(ingredient.getIngredientMeasure());

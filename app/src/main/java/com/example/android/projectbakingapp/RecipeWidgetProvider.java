@@ -46,26 +46,10 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
     }
 
     @Override
     public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
     }
-
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-//        if (intent.getAction().equals(START_ACTIVITY)){
-//            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-//                    AppWidgetManager.INVALID_APPWIDGET_ID);
-//            int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
-//        }
-//        Intent startActivityntent = new Intent(context, RecipeActivity.class);
-//        context.startActivity(startActivityntent);
-//
-//        super.onReceive(context, intent);
-//    }
 }
 

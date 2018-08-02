@@ -18,11 +18,16 @@ public class RecipeActivity extends AppCompatActivity
         implements OnListFragmentInteractionListener,
         RecipeDetailListFragment.OnDetailListFragmentInteraction, RecipeStepFragment.OnStepNavigationClicked{
 
-    private static int INGREDIENT_INDEX = 0;
-    private static int PREVIOUS_ID = 0;
-    private static int NEXT_ID = 1;
-    private static boolean DONT_ADD_BACKSTACK = false;
-    private static boolean ADD_BACKSTACK = true;
+    private static final int INGREDIENT_INDEX = 0;
+    private static final int PREVIOUS_ID = 0;
+    private static final int NEXT_ID = 1;
+    private static final boolean DONT_ADD_BACKSTACK = false;
+    private static final boolean ADD_BACKSTACK = true;
+    private static final String RECIPE_LIST_TAG = "Recipe_List";
+    private static final String RECIPE_DETAIL_LIST_TAG = "Recipe_Detail_List";
+    private static final String RECIPE_STEP_TAG = "Recipe_Step";
+    private static final String STEP_ID_BUNDLE = "stepId";
+    private static final String RECIPE_ID_BUNDLE = "recipeId";
     SimpleIdlingResource simpleIdlingResource;
     private boolean mTwoPane;
 
@@ -52,7 +57,7 @@ public class RecipeActivity extends AppCompatActivity
             if (savedInstanceState == null){
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 RecipeListFragment recipeListFragment = new RecipeListFragment();
-                fragmentTransaction.add(R.id.detail_and_step_list, recipeListFragment, "Recipe__List");
+                fragmentTransaction.add(R.id.detail_and_step_list, recipeListFragment, RECIPE_LIST_TAG);
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 fragmentTransaction.commit();
                 if (extras != null && !wasLaunchedFromRecents()){
@@ -68,7 +73,7 @@ public class RecipeActivity extends AppCompatActivity
         if (savedInstanceState == null && !mTwoPane){
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             RecipeListFragment recipeListFragment = new RecipeListFragment();
-            fragmentTransaction.add(R.id.displayList, recipeListFragment, "Recipe__List");
+            fragmentTransaction.add(R.id.displayList, recipeListFragment, RECIPE_LIST_TAG);
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             fragmentTransaction.commit();
             if (extras != null && !wasLaunchedFromRecents()){
@@ -85,9 +90,9 @@ public class RecipeActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
         RecipeDetailListFragment recipeDetailListFragment = new RecipeDetailListFragment();
         if (mTwoPane){
-            fragmentTransaction2.replace(R.id.detail_and_step_list, recipeDetailListFragment, "Recipe_Detail_List");
+            fragmentTransaction2.replace(R.id.detail_and_step_list, recipeDetailListFragment, RECIPE_DETAIL_LIST_TAG);
         } else {
-            fragmentTransaction2.replace(R.id.displayList, recipeDetailListFragment, "Recipe_Detail_List");
+            fragmentTransaction2.replace(R.id.displayList, recipeDetailListFragment, RECIPE_DETAIL_LIST_TAG);
         }
         fragmentTransaction2.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction2.addToBackStack(null);
@@ -107,15 +112,15 @@ public class RecipeActivity extends AppCompatActivity
             getSupportFragmentManager().popBackStack();
         }
         if (mTwoPane){
-            fragmentTransaction3.replace(R.id.media_description_tablet, recipeStepFragment, "Recipe_Step");
+            fragmentTransaction3.replace(R.id.media_description_tablet, recipeStepFragment, RECIPE_STEP_TAG);
         } else {
-            fragmentTransaction3.replace(R.id.displayList, recipeStepFragment, "Recipe_Step");
+            fragmentTransaction3.replace(R.id.displayList, recipeStepFragment, RECIPE_STEP_TAG);
             fragmentTransaction3.addToBackStack(null);
         }
         fragmentTransaction3.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         Bundle stepBundle = new Bundle();
-        stepBundle.putInt("stepId", stepPosition);
-        stepBundle.putInt("recipeId", recipeId);
+        stepBundle.putInt(STEP_ID_BUNDLE, stepPosition);
+        stepBundle.putInt(RECIPE_ID_BUNDLE, recipeId);
         recipeStepFragment.setArguments(stepBundle);
         fragmentTransaction3.commit();
     }
@@ -131,7 +136,7 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (mTwoPane && getSupportFragmentManager().findFragmentByTag("Recipe_Step") != null){
+        if (mTwoPane && getSupportFragmentManager().findFragmentByTag(RECIPE_STEP_TAG) != null){
             getSupportFragmentManager().beginTransaction().
                     remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
         }

@@ -15,11 +15,10 @@ import java.util.ArrayList;
 
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.RecipeListViewHolder>{
 
-    public static final String LOG_TAG = RecipeListAdapter.class.getSimpleName();
-
     private ArrayList<Recipe> recipeArrayList;
-    private Context context;
+    Context context;
     private final RecipeListFragment.OnListFragmentInteractionListener mListener;
+    private String servingsString;
 
     public RecipeListAdapter(Context context, ArrayList<Recipe> recipeArrayList, RecipeListFragment.OnListFragmentInteractionListener listener) {
         this.recipeArrayList = recipeArrayList;
@@ -35,6 +34,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         int layoutIdForListItem = R.layout.recipe_card_view;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
+        servingsString = context.getResources().getString(R.string.servings);
 
         //inflate the view and return
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
@@ -46,6 +46,12 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     @Override
     public void onBindViewHolder(@NonNull final RecipeListAdapter.RecipeListViewHolder holder, final int position) {
         holder.nameTextView.setText(recipeArrayList.get(position).getRecipeName());
+        StringBuilder builder = new StringBuilder();
+        builder.append(servingsString);
+        builder.append(": ");
+        builder.append(String.valueOf(recipeArrayList.get(position).getRecipeServings()));
+        String totalServings = builder.toString();
+        holder.servingsTextView.setText(totalServings);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,11 +67,13 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
     public class RecipeListViewHolder extends RecyclerView.ViewHolder{
         TextView nameTextView;
+        TextView servingsTextView;
 
         public RecipeListViewHolder(View v){
             super(v);
 
             nameTextView = (TextView) v.findViewById(R.id.recipeNameTextView);
+            servingsTextView = (TextView) v.findViewById(R.id.servings);
         }
     }
 }

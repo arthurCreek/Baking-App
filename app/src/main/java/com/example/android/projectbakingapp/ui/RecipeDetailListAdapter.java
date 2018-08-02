@@ -17,23 +17,23 @@ import java.util.ArrayList;
 
 public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailListAdapter.RecipeDetailListHolder> {
 
-    public static final String LOG_TAG = RecipeDetailListAdapter.class.getSimpleName();
-
     private int recipeId;
-    private String recipeName;
-    private ArrayList<Ingredient> ingredientsList;
+//    private String recipeName;
+//    private ArrayList<Ingredient> ingredientsList;
     private ArrayList<Step> stepList;
     private int recipeServings;
     private ArrayList<String> viewHolderArray;
     private RecipeDetailListFragment.OnDetailListFragmentInteraction mListener;
     private static boolean ADD_BACKSTACK = true;
+    private Context context;
 
-    public RecipeDetailListAdapter(Recipe recipe, RecipeDetailListFragment.OnDetailListFragmentInteraction mListener) {
+    public RecipeDetailListAdapter(Recipe recipe, RecipeDetailListFragment.OnDetailListFragmentInteraction mListener, Context context) {
         this.recipeId = recipe.getRecipeId();
-        this.recipeName = recipe.getRecipeName();
-        this.ingredientsList = recipe.getIngredientsList();
+//        this.recipeName = recipe.getRecipeName();
+//        this.ingredientsList = recipe.getIngredientsList();
         this.stepList = recipe.getStepList();
         this.recipeServings = recipe.getRecipeServings();
+        this.context = context;
         this.viewHolderArray = createViewHolderData();
         this.mListener = mListener;
     }
@@ -42,7 +42,7 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
     @Override
     public RecipeDetailListAdapter.RecipeDetailListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // set up the viewholder
-        Context context = parent.getContext();
+        context = parent.getContext();
         int layoutIdForListItem = R.layout.recipe_detail_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -55,7 +55,7 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
 
     private ArrayList<String> createViewHolderData() {
         ArrayList<String> stringArrayListData = new ArrayList<>();
-        stringArrayListData.add("Recipe Ingredients");
+        stringArrayListData.add(context.getResources().getString(R.string.recipe_ingredients));
         for (int i = 0; i < stepList.size(); i++){
             stringArrayListData.add(stepList.get(i).getShortDescription());
         }

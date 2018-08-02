@@ -13,11 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.android.projectbakingapp.Query.QueryUtils;
@@ -38,14 +36,11 @@ import java.util.ArrayList;
 
 public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
-    public static final String LOG_TAG = RecipeStepFragment.class.getSimpleName();
-
     private static final int PREVIOUS_ID = 0;
     private static final int NEXT_ID = 1;
 
-    //TODO move these to strings.xml
-    private static final String STEP_TEXT = "Step ";
-    private static final String INGREDIENTS = "Ingredients";
+    private static final String STEP_ID_TAG = "stepId";
+    private static final String RECIPE_ID_TAG = "recipeId";
 
     private ArrayList<Recipe> recipeArrayList;
     private Recipe recipe;
@@ -82,8 +77,8 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         super.onCreate(savedInstanceState);
         recipeArrayList = QueryUtils.extractRecipes(getContext());
         Bundle bundle = this.getArguments();
-        stepId = bundle.getInt("stepId");
-        recipeId = bundle.getInt("recipeId");
+        stepId = bundle.getInt(STEP_ID_TAG);
+        recipeId = bundle.getInt(RECIPE_ID_TAG);
         recipe = recipeArrayList.get(recipeId-1);
         recipeSize = recipe.getStepList().size();
         if (getActivity().findViewById(R.id.landscape_linear_layout) != null
@@ -120,7 +115,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
 
             previousStep.setVisibility(View.INVISIBLE);
-            stepIdTextView.setText(INGREDIENTS);
+            stepIdTextView.setText(getContext().getResources().getString(R.string.ingredients));
             nextStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -131,7 +126,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            recipeIngredientAdapter = new RecipeIngredientAdapter(recipe);
+            recipeIngredientAdapter = new RecipeIngredientAdapter(recipe, getContext());
             recyclerView.setAdapter(recipeIngredientAdapter);
         } else {
             rootView = inflater.inflate(R.layout.recipe_step, container, false);
@@ -145,7 +140,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                     mCallback.onStepClicked(stepId, recipeId, PREVIOUS_ID);
                 }
             });
-            String stepIdString = STEP_TEXT + stepId;
+            String stepIdString = getContext().getResources().getString(R.string.step) + " " + stepId;
             stepIdTextView.setText(stepIdString);
             if (stepId < recipeSize){
                 nextStep.setOnClickListener(new View.OnClickListener() {

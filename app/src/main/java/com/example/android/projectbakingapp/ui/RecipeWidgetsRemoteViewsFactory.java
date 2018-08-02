@@ -18,8 +18,6 @@ import java.util.ArrayList;
 
 public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    public static final String LOG_TAG = RecipeWidgetsRemoteViewsFactory.class.getSimpleName();
-
     private Context mContext;
     private ArrayList<Recipe> recipeArrayList;
     private ArrayList<Ingredient> ingredientArrayList;
@@ -41,7 +39,9 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
             StringBuilder builder = new StringBuilder();
             for (int j = 0; j < ingredientArrayList.size(); j++){
                 builder.append(ingredientArrayList.get(j).getIngredients());
-                builder.append(" Quantity: ");
+                builder.append(" ");
+                builder.append(mContext.getResources().getString(R.string.quantity));
+                builder.append(": ");
                 builder.append(ingredientArrayList.get(j).getIngredientQuantity());
                 builder.append(" ");
                 builder.append(ingredientArrayList.get(j).getIngredientMeasure());
@@ -79,7 +79,8 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
         String ingredientText = ingredientStringList.get(position);
 
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.stackview_item);
-        remoteViews.setTextViewText(R.id.sv_recipe_name, recipeName + " Preview");
+        remoteViews.setTextViewText(R.id.sv_recipe_name, recipeName
+                + " " + mContext.getResources().getString(R.string.preview));
         remoteViews.setTextViewText(R.id.sv_ingredient_list, ingredientText);
 
         Bundle extras = new Bundle();
