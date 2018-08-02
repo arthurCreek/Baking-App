@@ -44,6 +44,7 @@ public class RecipeDetailListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
         View view = inflater.inflate(R.layout.rv_detail_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rvRecipeDetailList);
 
@@ -52,6 +53,7 @@ public class RecipeDetailListFragment extends Fragment {
 
         recipeDetailListAdapter = new RecipeDetailListAdapter(recipe, mListener);
         recyclerView.setAdapter(recipeDetailListAdapter);
+
 
         return view;
     }
