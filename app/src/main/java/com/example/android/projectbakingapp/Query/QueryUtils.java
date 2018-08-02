@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class QueryUtils {
 
+    //Query the JSON from assets here and parse through it
     private QueryUtils(){
     }
 
@@ -73,6 +74,7 @@ public class QueryUtils {
 
     }
 
+    //Load the json asset
     private static String loadJSONFromAsset(Context context) {
         String json = null;
         try {

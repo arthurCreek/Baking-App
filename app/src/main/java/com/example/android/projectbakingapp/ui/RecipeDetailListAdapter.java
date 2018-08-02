@@ -18,8 +18,6 @@ import java.util.ArrayList;
 public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailListAdapter.RecipeDetailListHolder> {
 
     private int recipeId;
-//    private String recipeName;
-//    private ArrayList<Ingredient> ingredientsList;
     private ArrayList<Step> stepList;
     private int recipeServings;
     private ArrayList<String> viewHolderArray;
@@ -29,8 +27,6 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
 
     public RecipeDetailListAdapter(Recipe recipe, RecipeDetailListFragment.OnDetailListFragmentInteraction mListener, Context context) {
         this.recipeId = recipe.getRecipeId();
-//        this.recipeName = recipe.getRecipeName();
-//        this.ingredientsList = recipe.getIngredientsList();
         this.stepList = recipe.getStepList();
         this.recipeServings = recipe.getRecipeServings();
         this.context = context;
@@ -53,6 +49,7 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
         return viewHolder;
     }
 
+    //Return array list of strings from stepList
     private ArrayList<String> createViewHolderData() {
         ArrayList<String> stringArrayListData = new ArrayList<>();
         stringArrayListData.add(context.getResources().getString(R.string.recipe_ingredients));
@@ -62,9 +59,11 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
         return stringArrayListData;
     }
 
+    //Bind views here
     @Override
     public void onBindViewHolder(@NonNull RecipeDetailListAdapter.RecipeDetailListHolder holder, final int position) {
         holder.textView.setText(viewHolderArray.get(position));
+        //Create a click listener for itemView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

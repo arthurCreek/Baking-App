@@ -44,6 +44,7 @@ public class RecipeListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         recipeActivity = (RecipeActivity) getActivity();
 
+        //Get the idling resource and save to simpleIdlingResource
         simpleIdlingResource = (SimpleIdlingResource) recipeActivity.getIdlingResource();
         if (simpleIdlingResource != null){
             simpleIdlingResource.setIdleState(false);
@@ -55,6 +56,7 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //Create view here
         View rootView = inflater.inflate(R.layout.rv_recipe_list, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rvRecipeList);
 
@@ -69,6 +71,7 @@ public class RecipeListFragment extends Fragment {
         return rootView;
     }
 
+    //Make sure main activity implements OnListFragmentInteractionListener
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -80,6 +83,7 @@ public class RecipeListFragment extends Fragment {
         }
     }
 
+    // Make mListener null
     @Override
     public void onDetach() {
         super.onDetach();
@@ -87,7 +91,6 @@ public class RecipeListFragment extends Fragment {
     }
 
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Recipe recipe);
     }
 }

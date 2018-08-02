@@ -26,6 +26,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 //         There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
 
+            //Set intent for RecipeWidgetRemoteViewsService
             Intent intent = new Intent(context, RecipeWidgetRemoteViewsService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -33,6 +34,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_stackview_provider);
             views.setRemoteAdapter(R.id.widget_stack_view, intent);
 
+            //Set intent and pending intent in case app will be opened from widget
             Intent activityIntent = new Intent(context, RecipeActivity.class);
             activityIntent.setAction(START_ACTIVITY);
             activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

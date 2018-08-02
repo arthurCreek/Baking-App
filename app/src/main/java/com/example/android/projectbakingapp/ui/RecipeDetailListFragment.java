@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 public class RecipeDetailListFragment extends Fragment {
 
-    public static final String LOG_TAG = RecipeDetailListFragment.class.getSimpleName();
-
     private Recipe recipe;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -29,12 +27,14 @@ public class RecipeDetailListFragment extends Fragment {
     private static final String ID_BUNDLE = "id";
 
     public RecipeDetailListFragment() {
+        //Public constructor
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Initiate array list of recipes and get bundle argumets
         ArrayList<Recipe> recipes = QueryUtils.extractRecipes(getContext());
         Bundle bundle = this.getArguments();
         int recipeIdBundleArg = bundle.getInt(ID_BUNDLE);
@@ -45,7 +45,7 @@ public class RecipeDetailListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
+        //Create view here
         View view = inflater.inflate(R.layout.rv_detail_list, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.rvRecipeDetailList);
 
@@ -59,6 +59,7 @@ public class RecipeDetailListFragment extends Fragment {
         return view;
     }
 
+    //Make sure main activity implements the OnDetailListFragmentInteraction
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -70,12 +71,14 @@ public class RecipeDetailListFragment extends Fragment {
         }
     }
 
+    //Clear mListener
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    //Interface for interaction
     public interface OnDetailListFragmentInteraction {
         void onDetailListFragmentInteraction(int recipeId, int stepPosition, boolean addBackstack);
     }

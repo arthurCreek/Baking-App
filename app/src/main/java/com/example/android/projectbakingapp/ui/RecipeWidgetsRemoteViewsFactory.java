@@ -32,7 +32,9 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
 
     @Override
     public void onCreate() {
+        //Create recipe array list
         recipeArrayList = QueryUtils.extractRecipes(mContext);
+        //Create ingredient string list
         ingredientStringList = new ArrayList<>();
         for (int i = 0; i < recipeArrayList.size(); i++) {
             ingredientArrayList = recipeArrayList.get(i).getIngredientsList();
@@ -57,12 +59,10 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
 
     @Override
     public void onDataSetChanged() {
-
     }
 
     @Override
     public void onDestroy() {
-
     }
 
     @Override
@@ -73,6 +73,7 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
     @Override
     public RemoteViews getViewAt(int position) {
 
+        //Get remote views at certain positions
         Recipe recipe =  recipeArrayList.get(position);
         String recipeName = recipe.getRecipeName();
 

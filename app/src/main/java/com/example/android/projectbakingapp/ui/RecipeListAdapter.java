@@ -45,6 +45,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
     @Override
     public void onBindViewHolder(@NonNull final RecipeListAdapter.RecipeListViewHolder holder, final int position) {
+        //Bind views here
         holder.nameTextView.setText(recipeArrayList.get(position).getRecipeName());
         StringBuilder builder = new StringBuilder();
         builder.append(servingsString);
@@ -52,6 +53,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         builder.append(String.valueOf(recipeArrayList.get(position).getRecipeServings()));
         String totalServings = builder.toString();
         holder.servingsTextView.setText(totalServings);
+
+        //Set the onClickListener on itemView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -75,12 +75,16 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Get recipe array list
         recipeArrayList = QueryUtils.extractRecipes(getContext());
+        //Get bundle arguments
         Bundle bundle = this.getArguments();
         stepId = bundle.getInt(STEP_ID_TAG);
         recipeId = bundle.getInt(RECIPE_ID_TAG);
         recipe = recipeArrayList.get(recipeId-1);
         recipeSize = recipe.getStepList().size();
+        //Check to see if in two pane mode
         if (getActivity().findViewById(R.id.landscape_linear_layout) != null
                 || getActivity().findViewById(R.id.portrait_linear_layout) != null){
             mTwoPane = true;
@@ -89,11 +93,13 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         }
 
         recipeActivity = (RecipeActivity) getActivity();
+        //Get idling resource
         simpleIdlingResource = (SimpleIdlingResource) recipeActivity.getIdlingResource();
         if (simpleIdlingResource != null){
             simpleIdlingResource.setIdleState(false);
         }
 
+        //Get the start postion if savedInstanceState is not null for exoplayer
         if (savedInstanceState != null){
             startPosition = savedInstanceState.getLong(STARTING_POSITION);
         }
@@ -103,9 +109,10 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
+        //Create view here
         View rootView = null;
 
-
+        //At step 0, it is only the ingredients list, populate accordingly
         if (stepId == 0){
             rootView = inflater.inflate(R.layout.rv_ingredient_list, container, false);
             recyclerView = (RecyclerView) rootView.findViewById(R.id.rvIngredientList);
@@ -114,8 +121,10 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             nextStep = (ImageView) rootView.findViewById(R.id.next_step);
             stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
 
+            //Previous step image is not necessary on first page
             previousStep.setVisibility(View.INVISIBLE);
             stepIdTextView.setText(getContext().getResources().getString(R.string.ingredients));
+            //Set up on click listener
             nextStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -129,11 +138,13 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             recipeIngredientAdapter = new RecipeIngredientAdapter(recipe, getContext());
             recyclerView.setAdapter(recipeIngredientAdapter);
         } else {
+            //else populate accordingle
             rootView = inflater.inflate(R.layout.recipe_step, container, false);
             previousStep = (ImageView) rootView.findViewById(R.id.previous_step);
             nextStep = (ImageView) rootView.findViewById(R.id.next_step);
             stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
 
+            //set on click listeners
             previousStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -153,9 +164,11 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 nextStep.setVisibility(View.INVISIBLE);
             }
 
+            //start player view
             playerView = (PlayerView) rootView.findViewById(R.id.playerView);
             TextView descriptionTextView = (TextView) rootView.findViewById(R.id.longDescriptionTextView);
             descriptionTextView.setText(recipe.getStepList().get(stepId-1).getLongDescription());
+            //check if online
             if (isOnline()){
                 if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
                     urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
@@ -166,6 +179,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                     playerView.setVisibility(View.VISIBLE);
                     initializePlayer();
                 }
+                //else make empty view visible
             } else if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")
                     || !recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
                 noInternetExo = (TextView) rootView.findViewById(R.id.no_internet_exo);
@@ -173,6 +187,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             }
         }
 
+        //set idling state to true
         simpleIdlingResource.setIdleState(true);
 
         return rootView;
@@ -194,12 +209,14 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    // build the media source with uri
     private MediaSource buildMediaSource(Uri uri) {
         return new ExtractorMediaSource.Factory(
                 new DefaultHttpDataSourceFactory("exoplayer-codelab")).
                 createMediaSource(uri);
     }
 
+    //initialize player if not null
     @Override
     public void onStart() {
         super.onStart();
@@ -207,7 +224,6 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             initializePlayer();
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && !mTwoPane){
                 hideSystemUi();
-                //First Hide other objects (listview or recyclerview), better hide them using Gone.
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
                 params.width=params.MATCH_PARENT;
                 params.height=params.MATCH_PARENT;
@@ -221,6 +237,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    //initialize player if not null
     @Override
     public void onResume() {
         super.onResume();
@@ -251,6 +268,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
+    //save startPosition and release player
     @Override
     public void onPause() {
         super.onPause();
@@ -262,6 +280,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    //save startPosition and release player
     @Override
     public void onStop() {
         super.onStop();
@@ -273,6 +292,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    //Method to release player
     private void releasePlayer() {
         if (player != null) {
             startPosition = player.getCurrentPosition();
@@ -284,11 +304,13 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     }
 
 
+    //Interface for navigation clicks
     public interface OnStepNavigationClicked{
-        public void onStepClicked(int stepId, int recipeId, int stepDirection);
+        void onStepClicked(int stepId, int recipeId, int stepDirection);
 
     }
 
+    //Make sure main activity implements OnStepNavigationClicked
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -300,12 +322,14 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         }
     }
 
+    //Set mCallback to null;
     @Override
     public void onDetach() {
         super.onDetach();
         mCallback = null;
     }
 
+    //Check to see if there is network connectivity to play videos
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -314,6 +338,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
+    //Save the starting position
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
