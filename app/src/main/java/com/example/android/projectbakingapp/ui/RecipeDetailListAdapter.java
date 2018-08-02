@@ -7,31 +7,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.example.android.projectbakingapp.Ingredient;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.example.android.projectbakingapp.Step;
-
 import java.util.ArrayList;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailListAdapter.RecipeDetailListHolder> {
 
     private int recipeId;
     private ArrayList<Step> stepList;
-    private int recipeServings;
     private ArrayList<String> viewHolderArray;
     private RecipeDetailListFragment.OnDetailListFragmentInteraction mListener;
     private static boolean ADD_BACKSTACK = true;
-    private Context context;
+
+    Context context;
 
     public RecipeDetailListAdapter(Recipe recipe, RecipeDetailListFragment.OnDetailListFragmentInteraction mListener, Context context) {
         this.recipeId = recipe.getRecipeId();
         this.stepList = recipe.getStepList();
-        this.recipeServings = recipe.getRecipeServings();
         this.context = context;
         this.viewHolderArray = createViewHolderData();
         this.mListener = mListener;
+
     }
 
     @NonNull
@@ -61,7 +60,7 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
 
     //Bind views here
     @Override
-    public void onBindViewHolder(@NonNull RecipeDetailListAdapter.RecipeDetailListHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final RecipeDetailListAdapter.RecipeDetailListHolder holder, final int position) {
         holder.textView.setText(viewHolderArray.get(position));
         //Create a click listener for itemView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -78,12 +77,12 @@ public class RecipeDetailListAdapter extends RecyclerView.Adapter<RecipeDetailLi
     }
 
     public class RecipeDetailListHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.recipeDetailsTextView)
         TextView textView;
 
         public RecipeDetailListHolder(View itemView) {
             super(itemView);
-
-            textView = (TextView) itemView.findViewById(R.id.recipeDetailsTextView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

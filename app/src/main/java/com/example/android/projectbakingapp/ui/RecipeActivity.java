@@ -1,11 +1,12 @@
 package com.example.android.projectbakingapp.ui;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.android.projectbakingapp.Query.QueryUtils;
@@ -13,6 +14,9 @@ import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.example.android.projectbakingapp.RecipeWidgetProvider;
 import com.example.android.projectbakingapp.ui.RecipeListFragment.OnListFragmentInteractionListener;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class RecipeActivity extends AppCompatActivity
         implements OnListFragmentInteractionListener,
@@ -32,10 +36,15 @@ public class RecipeActivity extends AppCompatActivity
     private static final String RECIPE_STEP_TAG = "Recipe_Step";
     private static final String STEP_ID_BUNDLE = "stepId";
     private static final String RECIPE_ID_BUNDLE = "recipeId";
-
+    //SimpleIdligResource
     SimpleIdlingResource simpleIdlingResource;
     //Boolean to determine if launched in twoPane
     private boolean mTwoPane;
+
+    @Nullable
+    @BindView(R.id.landscape_linear_layout) LinearLayout landscapeLinearLayout;
+    @Nullable
+    @BindView(R.id.portrait_linear_layout) LinearLayout portraitLinearLayout;
 
     //Check to see if app was launched from recents
     protected boolean wasLaunchedFromRecents() {
@@ -58,9 +67,10 @@ public class RecipeActivity extends AppCompatActivity
         //Get extras if there are any
         Bundle extras = getIntent().getExtras();
         getIdlingResource();
+        ButterKnife.bind(this);
 
         //Check if app is in twoPane mode and if it is in portrait or landscape mode
-        if (findViewById(R.id.landscape_linear_layout) != null || findViewById(R.id.portrait_linear_layout) != null){
+        if (landscapeLinearLayout != null || portraitLinearLayout != null){
             mTwoPane = true;
 
             //Create fragments if savedInstance is null

@@ -14,6 +14,9 @@ import com.example.android.projectbakingapp.Recipe;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientAdapter.RecipeIngredientHolder> {
 
     private ArrayList<Ingredient> ingredientArrayList;
@@ -69,14 +72,14 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
     }
 
     public class RecipeIngredientHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.ingredientTextView)
         TextView ingredientTesxtView;
+        @BindView(R.id.quantityTextView)
         TextView measureTextView;
 
         public RecipeIngredientHolder(View itemView) {
             super(itemView);
-
-            ingredientTesxtView = (TextView) itemView.findViewById(R.id.ingredientTextView);
-            measureTextView = (TextView) itemView.findViewById(R.id.quantityTextView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

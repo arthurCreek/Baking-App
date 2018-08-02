@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,14 +18,21 @@ import com.example.android.projectbakingapp.Recipe;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class RecipeDetailListFragment extends Fragment {
 
     private Recipe recipe;
-    private RecyclerView recyclerView;
+    private Unbinder unbinder;
     private LinearLayoutManager linearLayoutManager;
     private RecipeDetailListAdapter recipeDetailListAdapter;
     private OnDetailListFragmentInteraction mListener;
     private static final String ID_BUNDLE = "id";
+
+    @BindView(R.id.rvRecipeDetailList)
+    RecyclerView recyclerView;
 
     public RecipeDetailListFragment() {
         //Public constructor
@@ -47,10 +55,14 @@ public class RecipeDetailListFragment extends Fragment {
 
         //Create view here
         View view = inflater.inflate(R.layout.rv_detail_list, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.rvRecipeDetailList);
+        unbinder = ButterKnife.bind(this, view);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+
+        DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(itemDecor);
 
         recipeDetailListAdapter = new RecipeDetailListAdapter(recipe, mListener, getContext());
         recyclerView.setAdapter(recipeDetailListAdapter);
@@ -81,5 +93,11 @@ public class RecipeDetailListFragment extends Fragment {
     //Interface for interaction
     public interface OnDetailListFragmentInteraction {
         void onDetailListFragmentInteraction(int recipeId, int stepPosition, boolean addBackstack);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

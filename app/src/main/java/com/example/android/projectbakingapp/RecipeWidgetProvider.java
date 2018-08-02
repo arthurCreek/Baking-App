@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.example.android.projectbakingapp.ui.RecipeActivity;

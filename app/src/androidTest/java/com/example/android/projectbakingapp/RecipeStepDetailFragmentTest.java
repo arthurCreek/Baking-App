@@ -3,6 +3,7 @@ package com.example.android.projectbakingapp;
 
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -51,7 +52,7 @@ public class RecipeStepDetailFragmentTest {
             @Override
             public void run() {
                 recipeActivityActivityTestRule.getActivity()
-                        .onDetailListFragmentInteraction(1, 0);
+                        .onDetailListFragmentInteraction(1, 0, false);
             }
         });
 
@@ -65,16 +66,44 @@ public class RecipeStepDetailFragmentTest {
     }
 
     @Test
+    public void textForwardButton(){
+        recipeActivityActivityTestRule.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recipeActivityActivityTestRule.getActivity()
+                        .onDetailListFragmentInteraction(1, 0, false);
+            }
+        });
+
+        onView(withId(R.id.next_step))
+                .perform(ViewActions.click());
+    }
+
+    @Test
+    public void textBackButton(){
+        recipeActivityActivityTestRule.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recipeActivityActivityTestRule.getActivity()
+                        .onDetailListFragmentInteraction(1, 3, false);
+            }
+        });
+
+        onView(withId(R.id.previous_step))
+                .perform(ViewActions.click());
+    }
+
+    @Test
     public void testStep() throws InterruptedException {
         recipeActivityActivityTestRule.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 recipeActivityActivityTestRule.getActivity()
-                        .onDetailListFragmentInteraction(1, 1);
+                        .onDetailListFragmentInteraction(1, 1, false);
             }
         });
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         onView(withId(R.id.playerView))
                 .check(matches(isDisplayed()));

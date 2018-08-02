@@ -34,6 +34,10 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
     private static final int PREVIOUS_ID = 0;
@@ -47,18 +51,13 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     private int stepId;
     private int recipeId;
     private int recipeSize;
-    private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecipeIngredientAdapter recipeIngredientAdapter;
-    private PlayerView playerView;
     private SimpleExoPlayer player;
     private String urlString;
     private OnStepNavigationClicked mCallback;
-    private ImageView previousStep;
-    private ImageView nextStep;
-    private TextView stepIdTextView;
-    private TextView noInternetExo;
     private boolean mTwoPane;
+    private Unbinder unbinder;
 
     private boolean startAutoPlay;
     private int startWindow;
@@ -66,6 +65,25 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
     SimpleIdlingResource simpleIdlingResource;
     private RecipeActivity recipeActivity;
+
+    @Nullable
+    @BindView(R.id.rvIngredientList)
+    RecyclerView recyclerView;
+    @BindView(R.id.previous_step)
+    ImageView previousStep;
+    @BindView(R.id.next_step)
+    ImageView nextStep;
+    @BindView(R.id.step_id_text_view)
+    TextView stepIdTextView;
+    @Nullable
+    @BindView(R.id.no_internet_exo)
+    TextView noInternetExo;
+    @Nullable
+    @BindView(R.id.playerView)
+    PlayerView playerView;
+    @Nullable
+    @BindView(R.id.longDescriptionTextView)
+    TextView descriptionTextView;
 
     private static final String STARTING_POSITION = "player_position";
 
@@ -115,11 +133,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         //At step 0, it is only the ingredients list, populate accordingly
         if (stepId == 0){
             rootView = inflater.inflate(R.layout.rv_ingredient_list, container, false);
-            recyclerView = (RecyclerView) rootView.findViewById(R.id.rvIngredientList);
-
-            previousStep = (ImageView) rootView.findViewById(R.id.previous_step);
-            nextStep = (ImageView) rootView.findViewById(R.id.next_step);
-            stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
+            unbinder = ButterKnife.bind(this, rootView);
 
             //Previous step image is not necessary on first page
             previousStep.setVisibility(View.INVISIBLE);
@@ -134,15 +148,14 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
             linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setHasFixedSize(true);
 
             recipeIngredientAdapter = new RecipeIngredientAdapter(recipe, getContext());
             recyclerView.setAdapter(recipeIngredientAdapter);
         } else {
             //else populate accordingle
             rootView = inflater.inflate(R.layout.recipe_step, container, false);
-            previousStep = (ImageView) rootView.findViewById(R.id.previous_step);
-            nextStep = (ImageView) rootView.findViewById(R.id.next_step);
-            stepIdTextView = (TextView) rootView.findViewById(R.id.step_id_text_view);
+            unbinder = ButterKnife.bind(this, rootView);
 
             //set on click listeners
             previousStep.setOnClickListener(new View.OnClickListener() {
@@ -165,8 +178,6 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             }
 
             //start player view
-            playerView = (PlayerView) rootView.findViewById(R.id.playerView);
-            TextView descriptionTextView = (TextView) rootView.findViewById(R.id.longDescriptionTextView);
             descriptionTextView.setText(recipe.getStepList().get(stepId-1).getLongDescription());
             //check if online
             if (isOnline()){
@@ -182,7 +193,6 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 //else make empty view visible
             } else if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")
                     || !recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
-                noInternetExo = (TextView) rootView.findViewById(R.id.no_internet_exo);
                 noInternetExo.setVisibility(View.VISIBLE);
             }
         }
@@ -343,5 +353,11 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STARTING_POSITION, startPosition);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

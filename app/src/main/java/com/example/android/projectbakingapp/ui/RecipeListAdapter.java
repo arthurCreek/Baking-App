@@ -13,12 +13,15 @@ import com.example.android.projectbakingapp.Recipe;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.RecipeListViewHolder>{
 
     private ArrayList<Recipe> recipeArrayList;
     Context context;
     private final RecipeListFragment.OnListFragmentInteractionListener mListener;
-    private String servingsString;
 
     public RecipeListAdapter(Context context, ArrayList<Recipe> recipeArrayList, RecipeListFragment.OnListFragmentInteractionListener listener) {
         this.recipeArrayList = recipeArrayList;
@@ -34,7 +37,6 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         int layoutIdForListItem = R.layout.recipe_card_view;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
-        servingsString = context.getResources().getString(R.string.servings);
 
         //inflate the view and return
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
@@ -48,7 +50,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
         //Bind views here
         holder.nameTextView.setText(recipeArrayList.get(position).getRecipeName());
         StringBuilder builder = new StringBuilder();
-        builder.append(servingsString);
+        builder.append(holder.servingsString);
         builder.append(": ");
         builder.append(String.valueOf(recipeArrayList.get(position).getRecipeServings()));
         String totalServings = builder.toString();
@@ -69,14 +71,16 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     }
 
     public class RecipeListViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.recipeNameTextView)
         TextView nameTextView;
+        @BindView(R.id.servings)
         TextView servingsTextView;
+        @BindString(R.string.servings)
+        String servingsString;
 
         public RecipeListViewHolder(View v){
             super(v);
-
-            nameTextView = (TextView) v.findViewById(R.id.recipeNameTextView);
-            servingsTextView = (TextView) v.findViewById(R.id.servings);
+            ButterKnife.bind(this, v);
         }
     }
 }
