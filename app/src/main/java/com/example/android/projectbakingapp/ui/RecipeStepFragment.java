@@ -91,6 +91,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     ImageView videoThumbnail;
 
     private static final String STARTING_POSITION = "player_position";
+    private static final String START_AUTO_PLAY = "start_auto_play";
 
     public RecipeStepFragment() {
     }
@@ -125,6 +126,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         //Get the start postion if savedInstanceState is not null for exoplayer
         if (savedInstanceState != null){
             startPosition = savedInstanceState.getLong(STARTING_POSITION);
+            startAutoPlay = savedInstanceState.getBoolean(START_AUTO_PLAY);
         }
     }
 
@@ -224,6 +226,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             player.setPlayWhenReady(startAutoPlay);
             player.seekTo(startWindow, startPosition);
 
+
             Uri uri = Uri.parse(urlString);
             MediaSource mediaSource = buildMediaSource(uri);
             player.prepare(mediaSource, true, false);
@@ -253,7 +256,8 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 nextStep.setVisibility(View.GONE);
                 stepIdTextView.setVisibility(View.GONE);
             }
-            player.setPlayWhenReady(true);
+
+            player.setPlayWhenReady(startAutoPlay);
             player.seekTo(startPosition);
         }
     }
@@ -274,7 +278,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 nextStep.setVisibility(View.GONE);
                 stepIdTextView.setVisibility(View.GONE);
             }
-            player.setPlayWhenReady(true);
+            player.setPlayWhenReady(startAutoPlay);
             player.seekTo(startPosition);
         }
     }
@@ -364,6 +368,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STARTING_POSITION, startPosition);
+        outState.putBoolean(START_AUTO_PLAY, player.getPlayWhenReady());
     }
 
     @Override
@@ -371,4 +376,6 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
 }
