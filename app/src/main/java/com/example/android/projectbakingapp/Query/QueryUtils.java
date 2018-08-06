@@ -63,7 +63,9 @@ public class QueryUtils {
 
                 int recipeServings = recipeObject.getInt("servings");
 
-                Recipe recipe = new Recipe(recipeId, recipeName, ingredientsResponse, stepResponse, recipeServings);
+                String imageUrl = recipeObject.optString("image");
+
+                Recipe recipe = new Recipe(recipeId, recipeName, ingredientsResponse, stepResponse, recipeServings, imageUrl);
                 recipeArrayList.add(recipe);
             }
         } catch (JSONException e) {

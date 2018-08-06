@@ -89,6 +89,9 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Nullable
     @BindView(R.id.video_thumbnail)
     ImageView videoThumbnail;
+    @Nullable
+    @BindView(R.id.recipe_image)
+    ImageView recipeImage;
 
     private static final String STARTING_POSITION = "player_position";
     private static final String START_AUTO_PLAY = "start_auto_play";
@@ -142,6 +145,12 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             rootView = inflater.inflate(R.layout.rv_ingredient_list, container, false);
             unbinder = ButterKnife.bind(this, rootView);
 
+            if (!recipe.getImageUrl().equals("")){
+                recipeImage.setVisibility(View.VISIBLE);
+                Glide.with(this)
+                        .load(recipe.getImageUrl())
+                        .into(recipeImage);
+            }
             //Previous step image is not necessary on first page
             previousStep.setVisibility(View.INVISIBLE);
             stepIdTextView.setText(getContext().getResources().getString(R.string.ingredients));
@@ -368,7 +377,9 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STARTING_POSITION, startPosition);
-        outState.putBoolean(START_AUTO_PLAY, player.getPlayWhenReady());
+        if (player != null){
+            outState.putBoolean(START_AUTO_PLAY, player.getPlayWhenReady());
+        }
     }
 
     @Override

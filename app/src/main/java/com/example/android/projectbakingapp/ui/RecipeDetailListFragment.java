@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.projectbakingapp.Query.QueryUtils;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
@@ -47,6 +49,7 @@ public class RecipeDetailListFragment extends Fragment {
         Bundle bundle = this.getArguments();
         int recipeIdBundleArg = bundle.getInt(ID_BUNDLE);
         recipe = recipes.get(recipeIdBundleArg-1);
+
     }
 
     @Nullable
@@ -55,9 +58,13 @@ public class RecipeDetailListFragment extends Fragment {
 
         //Create view here
         View view = inflater.inflate(R.layout.rv_detail_list, container, false);
+
         unbinder = ButterKnife.bind(this, view);
 
+
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
+
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 

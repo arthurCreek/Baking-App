@@ -9,13 +9,15 @@ public class Recipe {
     private ArrayList<Ingredient> ingredientsList;
     private ArrayList<Step> stepList;
     private int recipeServings;
+    private String imageUrl;
 
-    public Recipe(int recipeId, String recipeName, ArrayList<Ingredient> ingredientsList, ArrayList<Step> stepList, int recipeServings) {
+    public Recipe(int recipeId, String recipeName, ArrayList<Ingredient> ingredientsList, ArrayList<Step> stepList, int recipeServings, String imageUrl) {
         this.recipeId = recipeId;
         this.recipeName = recipeName;
         this.ingredientsList = ingredientsList;
         this.stepList = stepList;
         this.recipeServings = recipeServings;
+        this.imageUrl = imageUrl;
     }
 
     public int getRecipeId() {
@@ -56,5 +58,13 @@ public class Recipe {
 
     public void setRecipeServings(int recipeServings) {
         this.recipeServings = recipeServings;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
