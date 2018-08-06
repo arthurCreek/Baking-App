@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.android.projectbakingapp.Query.QueryUtils;
 import com.example.android.projectbakingapp.R;
@@ -84,6 +86,9 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Nullable
     @BindView(R.id.longDescriptionTextView)
     TextView descriptionTextView;
+    @Nullable
+    @BindView(R.id.video_thumbnail)
+    ImageView videoThumbnail;
 
     private static final String STARTING_POSITION = "player_position";
 
@@ -187,7 +192,13 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                     initializePlayer();
                 } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
                     urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
-                    playerView.setVisibility(View.VISIBLE);
+//                    playerView.setVisibility(View.VISIBLE);
+                    videoThumbnail.setVisibility(View.VISIBLE);
+                    Glide.with(getContext())
+                            .load(urlString)
+                            .error(R.drawable.error)
+                            .placeholder(R.drawable.android_chef)
+                            .into(videoThumbnail);
                     initializePlayer();
                 }
                 //else make empty view visible
