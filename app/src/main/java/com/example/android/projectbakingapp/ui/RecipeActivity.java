@@ -6,7 +6,9 @@ import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.android.projectbakingapp.Query.QueryUtils;
@@ -172,4 +174,22 @@ public class RecipeActivity extends AppCompatActivity
         else super.onBackPressed();
     }
 
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        getSupportFragmentManager().popBackStack();
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                getFragmentManager().popBackStack();
+//                Toast.makeText(this,"CLick",Toast.LENGTH_SHORT).show();
+//                return true; //Notice you must returning true here
+//
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 }
