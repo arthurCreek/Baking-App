@@ -1,6 +1,7 @@
 package com.example.android.projectbakingapp.ui;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.projectbakingapp.Query.QueryUtils;
+import com.example.android.projectbakingapp.Query.RecipeInterface;
+import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 
@@ -23,6 +27,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecipeDetailListFragment extends Fragment {
 
@@ -32,9 +39,14 @@ public class RecipeDetailListFragment extends Fragment {
     private RecipeDetailListAdapter recipeDetailListAdapter;
     private OnDetailListFragmentInteraction mListener;
     private static final String ID_BUNDLE = "id";
+    private ArrayList<Recipe> recipeArrayList;
+    private int recipeIdBundleArg;
 
     @BindView(R.id.rvRecipeDetailList)
-    RecyclerView recyclerView;
+    RecyclerView recyclerViewRecipeDetailList;
+    @Nullable
+    @BindView(R.id.recipeDetailEmptyTextView)
+    TextView emptyTextView;
 
     public RecipeDetailListFragment() {
         //Public constructor
@@ -43,37 +55,30 @@ public class RecipeDetailListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Initiate array list of recipes and get bundle argumets
-        ArrayList<Recipe> recipes = QueryUtils.extractRecipes(getContext());
         Bundle bundle = this.getArguments();
-        int recipeIdBundleArg = bundle.getInt(ID_BUNDLE);
-        recipe = recipes.get(recipeIdBundleArg-1);
+        recipeIdBundleArg = bundle.getInt(ID_BUNDLE);
 
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         //Create view here
         View view = inflater.inflate(R.layout.rv_detail_list, container, false);
 
         unbinder = ButterKnife.bind(this, view);
 
-
         linearLayoutManager = new LinearLayoutManager(getActivity());
-
-
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
+        recyclerViewRecipeDetailList.setLayoutManager(linearLayoutManager);
+        recyclerViewRecipeDetailList.setHasFixedSize(true);
 
         DividerItemDecoration itemDecor = new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation());
-        recyclerView.addItemDecoration(itemDecor);
+        recyclerViewRecipeDetailList.addItemDecoration(itemDecor);
 
+        recipeArrayList = RecipeActivity.recipeArrayList;
+        recipe = recipeArrayList.get(recipeIdBundleArg-1);
         recipeDetailListAdapter = new RecipeDetailListAdapter(recipe, mListener, getContext());
-        recyclerView.setAdapter(recipeDetailListAdapter);
-
+        recyclerViewRecipeDetailList.setAdapter(recipeDetailListAdapter);
 
         return view;
     }

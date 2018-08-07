@@ -1,8 +1,14 @@
 package com.example.android.projectbakingapp;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Ingredient {
+
+    @SerializedName("quantity")
     private double ingredientQuantity;
+    @SerializedName("measure")
     private String ingredientMeasure;
+    @SerializedName("ingredient")
     private String ingredients;
 
     public Ingredient(double ingredientQuantity, String ingredientMeasure, String ingredients) {

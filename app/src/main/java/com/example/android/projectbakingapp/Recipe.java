@@ -1,14 +1,22 @@
 package com.example.android.projectbakingapp;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class Recipe {
 
+    @SerializedName("id")
     private int recipeId;
+    @SerializedName("name")
     private String recipeName;
+    @SerializedName("ingredients")
     private ArrayList<Ingredient> ingredientsList;
+    @SerializedName("steps")
     private ArrayList<Step> stepList;
+    @SerializedName("servings")
     private int recipeServings;
+    @SerializedName("image")
     private String imageUrl;
 
     public Recipe(int recipeId, String recipeName, ArrayList<Ingredient> ingredientsList, ArrayList<Step> stepList, int recipeServings, String imageUrl) {

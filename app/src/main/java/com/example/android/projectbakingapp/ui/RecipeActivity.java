@@ -1,6 +1,8 @@
 package com.example.android.projectbakingapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +18,8 @@ import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.example.android.projectbakingapp.RecipeWidgetProvider;
 import com.example.android.projectbakingapp.ui.RecipeListFragment.OnListFragmentInteractionListener;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,8 +40,11 @@ public class RecipeActivity extends AppCompatActivity
     private static final String RECIPE_LIST_TAG = "Recipe_List";
     private static final String RECIPE_DETAIL_LIST_TAG = "Recipe_Detail_List";
     private static final String RECIPE_STEP_TAG = "Recipe_Step";
+
     private static final String STEP_ID_BUNDLE = "stepId";
     private static final String RECIPE_ID_BUNDLE = "recipeId";
+
+    public static ArrayList<Recipe> recipeArrayList;
     //SimpleIdligResource
     SimpleIdlingResource simpleIdlingResource;
     //Boolean to determine if launched in twoPane
@@ -172,6 +179,15 @@ public class RecipeActivity extends AppCompatActivity
                     remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
         }
         else super.onBackPressed();
+    }
+
+    //Check to see if there is network connectivity to play videos
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
 //    @Override

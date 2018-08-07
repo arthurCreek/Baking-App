@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
 import com.example.android.projectbakingapp.Query.QueryUtils;
+import com.example.android.projectbakingapp.Query.RecipeInterface;
+import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -39,6 +41,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
@@ -103,14 +107,11 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Get recipe array list
-        recipeArrayList = QueryUtils.extractRecipes(getContext());
         //Get bundle arguments
         Bundle bundle = this.getArguments();
         stepId = bundle.getInt(STEP_ID_TAG);
         recipeId = bundle.getInt(RECIPE_ID_TAG);
-        recipe = recipeArrayList.get(recipeId-1);
-        recipeSize = recipe.getStepList().size();
+        recipeArrayList = RecipeActivity.recipeArrayList;
         //Check to see if in two pane mode
         if (getActivity().findViewById(R.id.landscape_linear_layout) != null
                 || getActivity().findViewById(R.id.portrait_linear_layout) != null){
@@ -144,10 +145,14 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         if (stepId == 0){
             rootView = inflater.inflate(R.layout.rv_ingredient_list, container, false);
             unbinder = ButterKnife.bind(this, rootView);
+            recipe = recipeArrayList.get(recipeId-1);
+            linearLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setHasFixedSize(true);
 
             if (!recipe.getImageUrl().equals("")){
                 recipeImage.setVisibility(View.VISIBLE);
-                Glide.with(this)
+                Glide.with(getContext())
                         .load(recipe.getImageUrl())
                         .into(recipeImage);
             }
@@ -161,11 +166,6 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                     mCallback.onStepClicked(stepId, recipeId, NEXT_ID);
                 }
             });
-
-            linearLayoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setHasFixedSize(true);
-
             recipeIngredientAdapter = new RecipeIngredientAdapter(recipe, getContext());
             recyclerView.setAdapter(recipeIngredientAdapter);
         } else {
@@ -173,6 +173,8 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             rootView = inflater.inflate(R.layout.recipe_step, container, false);
             unbinder = ButterKnife.bind(this, rootView);
 
+            recipe = recipeArrayList.get(recipeId-1);
+            recipeSize = recipe.getStepList().size();
             //set on click listeners
             previousStep.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -192,29 +194,21 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
             } else {
                 nextStep.setVisibility(View.INVISIBLE);
             }
-
-            //start player view
             descriptionTextView.setText(recipe.getStepList().get(stepId-1).getLongDescription());
-            //check if online
-            if (isOnline()){
-                if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
-                    urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
-                    playerView.setVisibility(View.VISIBLE);
-                    initializePlayer();
-                } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
-                    urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
-//                    playerView.setVisibility(View.VISIBLE);
-                    videoThumbnail.setVisibility(View.VISIBLE);
-                    Glide.with(getContext())
-                            .load(urlString)
-                            .error(R.drawable.error)
-                            .placeholder(R.drawable.android_chef)
-                            .into(videoThumbnail);
-                    initializePlayer();
-                }
-                //else make empty view visible
-            } else if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")
-                    || !recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
+            if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
+                urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
+                playerView.setVisibility(View.VISIBLE);
+                initializePlayer();
+            } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
+                urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
+                videoThumbnail.setVisibility(View.VISIBLE);
+                Glide.with(getContext())
+                        .load(urlString)
+                        .error(R.drawable.error)
+                        .placeholder(R.drawable.android_chef)
+                        .into(videoThumbnail);
+                initializePlayer();
+            } else {
                 noInternetExo.setVisibility(View.VISIBLE);
             }
         }
@@ -387,6 +381,4 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         super.onDestroyView();
         unbinder.unbind();
     }
-
-
 }
