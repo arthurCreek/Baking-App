@@ -92,7 +92,7 @@ public class RecipeActivity extends AppCompatActivity
                 //If app was launched from widget, open up the correct ingredients list
                 if (extras != null && !wasLaunchedFromRecents()){
                     int widgetIndexPosition = extras.getInt(RecipeWidgetProvider.EXTRA_ITEM);
-                    onListFragmentInteraction(QueryUtils.extractRecipes(this).get(widgetIndexPosition));
+                    onListFragmentInteraction(recipeArrayList.get(widgetIndexPosition));
                     onDetailListFragmentInteraction(widgetIndexPosition+1, INGREDIENT_INDEX, ADD_BACKSTACK);
                 }
             }
@@ -110,7 +110,7 @@ public class RecipeActivity extends AppCompatActivity
             //If app was lanched from widget and in single pane mode, open correct ingredients list
             if (extras != null && !wasLaunchedFromRecents()){
                 int widgetIndexPosition = extras.getInt(RecipeWidgetProvider.EXTRA_ITEM);
-                onListFragmentInteraction(QueryUtils.extractRecipes(this).get(widgetIndexPosition));
+                onListFragmentInteraction(recipeArrayList.get(widgetIndexPosition));
                 onDetailListFragmentInteraction(widgetIndexPosition+1, INGREDIENT_INDEX, ADD_BACKSTACK);
             }
         }

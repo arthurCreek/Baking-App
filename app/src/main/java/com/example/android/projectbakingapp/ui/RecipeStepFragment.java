@@ -195,20 +195,25 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
                 nextStep.setVisibility(View.INVISIBLE);
             }
             descriptionTextView.setText(recipe.getStepList().get(stepId-1).getLongDescription());
-            if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
-                urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
-                playerView.setVisibility(View.VISIBLE);
-                initializePlayer();
-            } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
-                urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
-                videoThumbnail.setVisibility(View.VISIBLE);
-                Glide.with(getContext())
-                        .load(urlString)
-                        .error(R.drawable.error)
-                        .placeholder(R.drawable.android_chef)
-                        .into(videoThumbnail);
-                initializePlayer();
-            } else {
+            if (isOnline()){
+                if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")){
+                    urlString = recipe.getStepList().get(stepId-1).getVideoUrl();
+                    playerView.setVisibility(View.VISIBLE);
+                    initializePlayer();
+                } else if (!recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
+                    urlString = recipe.getStepList().get(stepId-1).getThumbnailUrl();
+//                    playerView.setVisibility(View.VISIBLE);
+                    videoThumbnail.setVisibility(View.VISIBLE);
+                    Glide.with(getContext())
+                            .load(urlString)
+                            .error(R.drawable.error)
+                            .placeholder(R.drawable.android_chef)
+                            .into(videoThumbnail);
+                    initializePlayer();
+                }
+                //else make empty view visible
+            } else if (!recipe.getStepList().get(stepId-1).getVideoUrl().equals("")
+                    || !recipe.getStepList().get(stepId-1).getThumbnailUrl().equals("")){
                 noInternetExo.setVisibility(View.VISIBLE);
             }
         }
