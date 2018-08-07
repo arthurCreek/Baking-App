@@ -24,7 +24,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
     private final RecipeListFragment.OnListFragmentInteractionListener mListener;
 
     public RecipeListAdapter(Context context, ArrayList<Recipe> recipeArrayList, RecipeListFragment.OnListFragmentInteractionListener listener) {
-        this.recipeArrayList = recipeArrayList;
+//        this.recipeArrayList = recipeArrayList;
         this.context = context;
         this.mListener = listener;
     }
@@ -67,7 +67,11 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
 
     @Override
     public int getItemCount() {
-        return recipeArrayList.size();
+        if (recipeArrayList == null){
+            return 0;
+        } else {
+            return recipeArrayList.size();
+        }
     }
 
     public class RecipeListViewHolder extends RecyclerView.ViewHolder{
@@ -82,5 +86,10 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Re
             super(v);
             ButterKnife.bind(this, v);
         }
+    }
+
+    public void setRecipeArrayList(ArrayList<Recipe> recipeArrayListLoaded){
+        recipeArrayList = recipeArrayListLoaded;
+        notifyDataSetChanged();
     }
 }

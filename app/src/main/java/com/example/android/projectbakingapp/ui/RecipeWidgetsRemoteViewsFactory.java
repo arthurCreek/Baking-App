@@ -3,17 +3,23 @@ package com.example.android.projectbakingapp.ui;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.android.projectbakingapp.Ingredient;
 import com.example.android.projectbakingapp.Query.QueryUtils;
+import com.example.android.projectbakingapp.Query.RecipeInterface;
+import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.example.android.projectbakingapp.RecipeWidgetProvider;
 
 import java.util.ArrayList;
+
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
@@ -31,33 +37,13 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
 
     @Override
     public void onCreate() {
-        //Create recipe array list
-        recipeArrayList = QueryUtils.extractRecipes(mContext);
-        //Create ingredient string list
-        ingredientStringList = new ArrayList<>();
-        for (int i = 0; i < recipeArrayList.size(); i++) {
-            ingredientArrayList = recipeArrayList.get(i).getIngredientsList();
-            StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < ingredientArrayList.size(); j++){
-                builder.append(ingredientArrayList.get(j).getIngredients());
-                builder.append(" ");
-                builder.append(mContext.getResources().getString(R.string.quantity));
-                builder.append(": ");
-                builder.append(ingredientArrayList.get(j).getIngredientQuantity());
-                builder.append(" ");
-                builder.append(ingredientArrayList.get(j).getIngredientMeasure());
-                if (j != ingredientArrayList.size()-1){
-                    builder.append("\n");
-                }
-            }
-            String ingredientString = builder.toString();
-            ingredientStringList.add(ingredientString);
         }
-    }
+
 
 
     @Override
     public void onDataSetChanged() {
+        loadData();
     }
 
     @Override
@@ -66,7 +52,11 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
 
     @Override
     public int getCount() {
-        return recipeArrayList.size();
+        if (recipeArrayList == null){
+            return 0;
+        } else {
+            return recipeArrayList.size();
+        }
     }
 
     @Override
@@ -112,5 +102,63 @@ public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.Remot
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    //Check to see if there is network connectivity to play videos
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public void loadData(){
+        RecipeInterface recipeInterface = RetrofitController
+                .getRetrofit(mContext)
+                .create(RecipeInterface.class);
+
+        final retrofit2.Call<ArrayList<Recipe>> recipeCall = recipeInterface.getRecipe();
+
+        recipeCall.enqueue(new Callback<ArrayList<Recipe>>() {
+            @Override
+            public void onResponse(retrofit2.Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
+                int status = response.code();
+
+                if (response.isSuccessful()){
+                    recipeArrayList = response.body();
+                    ingredientStringList = new ArrayList<>();
+                    for (int i = 0; i < recipeArrayList.size(); i++) {
+                        ingredientArrayList = recipeArrayList.get(i).getIngredientsList();
+                        StringBuilder builder = new StringBuilder();
+                        for (int j = 0; j < ingredientArrayList.size(); j++) {
+                            builder.append(ingredientArrayList.get(j).getIngredients());
+                            builder.append(" ");
+                            builder.append(mContext.getResources().getString(R.string.quantity));
+                            builder.append(": ");
+                            builder.append(ingredientArrayList.get(j).getIngredientQuantity());
+                            builder.append(" ");
+                            builder.append(ingredientArrayList.get(j).getIngredientMeasure());
+                            if (j != ingredientArrayList.size() - 1) {
+                                builder.append("\n");
+                            }
+                        }
+                        String ingredientString = builder.toString();
+                        ingredientStringList.add(ingredientString);
+                    }
+                    setRecipeStringList(ingredientStringList);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ArrayList<Recipe>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void setRecipeStringList(ArrayList<String> recipeStringListResposnse){
+        ingredientStringList = recipeStringListResposnse;
+
     }
 }

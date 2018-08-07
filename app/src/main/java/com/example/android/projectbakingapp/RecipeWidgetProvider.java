@@ -3,6 +3,7 @@ package com.example.android.projectbakingapp;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     public static final String EXTRA_ITEM = "com.example.android.projectbakingapp.EXTRA_ITEM";
     public static final String START_ACTIVITY = "com.example.android.projectbakingapp.START_ACTIVITY";
+    public static String UPDATE_LIST = "UPDATE_LIST";
 
 
     @Override
@@ -41,8 +43,11 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_stack_view, pendingIntent);
 
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_stack_view);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+
     }
 
     @Override
@@ -52,5 +57,20 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
     }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if(intent.getAction().equalsIgnoreCase(UPDATE_LIST)){
+            updateWidget(context);
+        }
+    }
+
+    private void updateWidget(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_stack_view);
+    }
+
 }
 

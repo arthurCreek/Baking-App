@@ -42,7 +42,6 @@ public class RecipeListFragment extends Fragment {
     private RecipeActivity recipeActivity;
     SimpleIdlingResource simpleIdlingResource;
 
-    @Nullable
     @BindView(R.id.rvRecipeList)
     RecyclerView recyclerView;
     @Nullable
@@ -76,7 +75,13 @@ public class RecipeListFragment extends Fragment {
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
 
+        recipeListAdapter = new RecipeListAdapter(getContext(), recipeArrayList, mListener);
+        recyclerView.setAdapter(recipeListAdapter);
+
+        recipeListAdapter.setRecipeArrayList(recipeArrayList);
+        recipeListAdapter.notifyDataSetChanged();
 
         if (isOnline()){
             loadData();
@@ -133,10 +138,8 @@ public class RecipeListFragment extends Fragment {
                 if (response.isSuccessful()){
                     recipeArrayList = response.body();
                     RecipeActivity.recipeArrayList = recipeArrayList;
-                    recipeListAdapter = new RecipeListAdapter(getContext(), recipeArrayList, mListener);
-                    recyclerView.setAdapter(recipeListAdapter);
-                    recyclerView.setHasFixedSize(true);
-                    setRecipeListAdapter(recipeListAdapter);
+                    recipeListAdapter.setRecipeArrayList(recipeArrayList);
+                    recipeListAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -154,10 +157,6 @@ public class RecipeListFragment extends Fragment {
 
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
-    }
-
-    public void setRecipeListAdapter(RecipeListAdapter listAdapter){
-        recipeListAdapter = listAdapter;
     }
 
 }
