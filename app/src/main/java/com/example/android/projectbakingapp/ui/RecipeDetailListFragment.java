@@ -1,7 +1,6 @@
 package com.example.android.projectbakingapp.ui;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,13 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.example.android.projectbakingapp.Query.QueryUtils;
-import com.example.android.projectbakingapp.Query.RecipeInterface;
-import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 
@@ -27,9 +21,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RecipeDetailListFragment extends Fragment {
 

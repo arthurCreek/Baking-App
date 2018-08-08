@@ -8,14 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
-import com.example.android.projectbakingapp.Query.QueryUtils;
 import com.example.android.projectbakingapp.Query.RecipeInterface;
 import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
@@ -83,9 +81,11 @@ public class RecipeListFragment extends Fragment {
         recipeListAdapter.setRecipeArrayList(recipeArrayList);
         recipeListAdapter.notifyDataSetChanged();
 
+        //If connected loadData()
         if (isOnline()){
             loadData();
         } else {
+            //Else show the empty view
             emptyTextView.setVisibility(View.VISIBLE);
         }
 
@@ -123,6 +123,7 @@ public class RecipeListFragment extends Fragment {
         unbinder.unbind();
     }
 
+    //Load data using Retrofit
     public void loadData(){
         RecipeInterface recipeInterface = RetrofitController
                 .getRetrofit(getContext())
@@ -130,11 +131,13 @@ public class RecipeListFragment extends Fragment {
 
         final retrofit2.Call<ArrayList<Recipe>> recipeCall = recipeInterface.getRecipe();
 
+        //Call to get ArrayList<Recipe>
         recipeCall.enqueue(new Callback<ArrayList<Recipe>>() {
             @Override
             public void onResponse(retrofit2.Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
                 int status = response.code();
 
+                // If successful get the array list of recipes and notify data set changed
                 if (response.isSuccessful()){
                     recipeArrayList = response.body();
                     RecipeActivity.recipeArrayList = recipeArrayList;

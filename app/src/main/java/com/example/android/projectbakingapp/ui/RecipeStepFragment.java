@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,9 +19,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
-import com.example.android.projectbakingapp.Query.QueryUtils;
-import com.example.android.projectbakingapp.Query.RecipeInterface;
-import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -41,8 +37,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RecipeStepFragment extends android.support.v4.app.Fragment{
 

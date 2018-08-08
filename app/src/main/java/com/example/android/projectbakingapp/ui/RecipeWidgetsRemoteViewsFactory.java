@@ -3,13 +3,11 @@ package com.example.android.projectbakingapp.ui;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.android.projectbakingapp.Ingredient;
-import com.example.android.projectbakingapp.Query.QueryUtils;
 import com.example.android.projectbakingapp.Query.RecipeInterface;
 import com.example.android.projectbakingapp.Query.RetrofitController;
 import com.example.android.projectbakingapp.R;
@@ -18,9 +16,6 @@ import com.example.android.projectbakingapp.RecipeWidgetProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RecipeWidgetsRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 

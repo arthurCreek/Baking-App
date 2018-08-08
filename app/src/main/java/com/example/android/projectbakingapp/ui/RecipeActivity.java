@@ -78,6 +78,7 @@ public class RecipeActivity extends AppCompatActivity
         getIdlingResource();
         ButterKnife.bind(this);
 
+        //Set the display home as up enabled
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } else {
@@ -186,6 +187,7 @@ public class RecipeActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().
                     remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
         }
+        // This determines if backstack is only the first fragment, so eliminate actionbar up navigation
         if (getSupportFragmentManager().getBackStackEntryCount() == 1){
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             super.onBackPressed();
@@ -193,9 +195,11 @@ public class RecipeActivity extends AppCompatActivity
         else super.onBackPressed();
     }
 
+    //Allow action bar app navigation to be selected and acted on
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            //When toolbar up arrow is selected
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
                 if (mTwoPane && getSupportFragmentManager().findFragmentByTag(RECIPE_STEP_TAG) != null){

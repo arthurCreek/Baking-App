@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+//Implement Retrofit and connect to url
 public class RetrofitController {
 
     public static Retrofit retrofit = null;
@@ -40,10 +41,7 @@ public class RetrofitController {
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpBuilder.build())
                     .build();
-
         }
-
         return retrofit;
     }
-
 }

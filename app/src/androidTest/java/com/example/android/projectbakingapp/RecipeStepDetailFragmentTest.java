@@ -7,7 +7,7 @@ import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import com.example.android.projectbakingapp.Query.QueryUtils;
+
 import com.example.android.projectbakingapp.ui.RecipeActivity;
 
 import org.junit.After;
@@ -40,7 +40,8 @@ public class RecipeStepDetailFragmentTest {
             public void run() {
                 recipeActivityActivityTestRule.getActivity()
                         .onListFragmentInteraction(
-                                (QueryUtils.extractRecipes(recipeActivityActivityTestRule.getActivity().getApplicationContext())).get(0));
+                                recipeActivityActivityTestRule.getActivity().recipeArrayList.get(0)
+                        );
 
             }
         });
