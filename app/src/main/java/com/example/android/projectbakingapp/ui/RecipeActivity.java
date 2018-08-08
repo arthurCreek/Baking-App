@@ -5,10 +5,16 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.OrientationEventListener;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -54,6 +60,9 @@ public class RecipeActivity extends AppCompatActivity
     @BindView(R.id.landscape_linear_layout) LinearLayout landscapeLinearLayout;
     @Nullable
     @BindView(R.id.portrait_linear_layout) LinearLayout portraitLinearLayout;
+    @Nullable
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     //Check to see if app was launched from recents
     protected boolean wasLaunchedFromRecents() {
@@ -77,6 +86,24 @@ public class RecipeActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         getIdlingResource();
         ButterKnife.bind(this);
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
+//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener(){
+//            @Override
+//            public void onBackStackChanged() {
+//                if (!mTwoPane && getSupportFragmentManager().getBackStackEntryCount() > 0) {
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//                    getSupportActionBar().onConfigurationChanged();// show back button
+//                } else {
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                }
+//            }
+//        });
 
         //Check if app is in twoPane mode and if it is in portrait or landscape mode
         if (landscapeLinearLayout != null || portraitLinearLayout != null){
@@ -134,6 +161,7 @@ public class RecipeActivity extends AppCompatActivity
         bundle.putInt("id", recipe.getRecipeId());
         recipeDetailListFragment.setArguments(bundle);
         fragmentTransaction2.commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -159,6 +187,7 @@ public class RecipeActivity extends AppCompatActivity
         stepBundle.putInt(RECIPE_ID_BUNDLE, recipeId);
         recipeStepFragment.setArguments(stepBundle);
         fragmentTransaction3.commit();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     //Based on previous or forward click, open correct step
@@ -178,6 +207,10 @@ public class RecipeActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().
                     remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
         }
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            super.onBackPressed();
+        }
         else super.onBackPressed();
     }
 
@@ -190,22 +223,24 @@ public class RecipeActivity extends AppCompatActivity
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        getSupportFragmentManager().popBackStack();
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                getFragmentManager().popBackStack();
-//                Toast.makeText(this,"CLick",Toast.LENGTH_SHORT).show();
-//                return true; //Notice you must returning true here
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getSupportFragmentManager().popBackStack();
+                if (getSupportFragmentManager().getBackStackEntryCount() == 1){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
+//                if (mTwoPane && getSupportFragmentManager().findFragmentByTag(RECIPE_STEP_TAG) != null){
+//                    getSupportFragmentManager().beginTransaction().
+//                            remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
+//                } else if (getSupportFragmentManager().getBackStackEntryCount() == 1){
+//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//                }
+                return true; //Notice you must returning true here
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
