@@ -51,6 +51,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
 
     private static final String STEP_ID_TAG = "stepId";
     private static final String RECIPE_ID_TAG = "recipeId";
+    private static final String TWO_PANE_TAG = "twoPane";
 
     private ArrayList<Recipe> recipeArrayList;
     private Recipe recipe;
@@ -252,6 +253,12 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Override
     public void onStart() {
         super.onStart();
+        if (getActivity().findViewById(R.id.landscape_linear_layout) != null
+                || getActivity().findViewById(R.id.portrait_linear_layout) != null){
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
         if (Util.SDK_INT > 23 && player != null) {
             initializePlayer();
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && !mTwoPane){
@@ -274,6 +281,12 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
     @Override
     public void onResume() {
         super.onResume();
+        if (getActivity().findViewById(R.id.landscape_linear_layout) != null
+                || getActivity().findViewById(R.id.portrait_linear_layout) != null){
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
         if ((Util.SDK_INT <= 23 && player != null)) {
             initializePlayer();
             if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && !mTwoPane){
@@ -378,6 +391,7 @@ public class RecipeStepFragment extends android.support.v4.app.Fragment{
         outState.putLong(STARTING_POSITION, startPosition);
         if (player != null){
             outState.putBoolean(START_AUTO_PLAY, player.getPlayWhenReady());
+            outState.putBoolean(TWO_PANE_TAG, mTwoPane);
         }
     }
 

@@ -1,25 +1,16 @@
 package com.example.android.projectbakingapp.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.OrientationEventListener;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.android.projectbakingapp.IdlingResource.SimpleIdlingResource;
-import com.example.android.projectbakingapp.Query.QueryUtils;
 import com.example.android.projectbakingapp.R;
 import com.example.android.projectbakingapp.Recipe;
 import com.example.android.projectbakingapp.RecipeWidgetProvider;
@@ -92,18 +83,6 @@ public class RecipeActivity extends AppCompatActivity
         } else {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
-//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener(){
-//            @Override
-//            public void onBackStackChanged() {
-//                if (!mTwoPane && getSupportFragmentManager().getBackStackEntryCount() > 0) {
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                    getSupportActionBar().onConfigurationChanged();// show back button
-//                } else {
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                }
-//            }
-//        });
 
         //Check if app is in twoPane mode and if it is in portrait or landscape mode
         if (landscapeLinearLayout != null || portraitLinearLayout != null){
@@ -214,29 +193,17 @@ public class RecipeActivity extends AppCompatActivity
         else super.onBackPressed();
     }
 
-    //Check to see if there is network connectivity to play videos
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null &&
-                cm.getActiveNetworkInfo().isConnectedOrConnecting();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
-                if (getSupportFragmentManager().getBackStackEntryCount() == 1){
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                if (mTwoPane && getSupportFragmentManager().findFragmentByTag(RECIPE_STEP_TAG) != null){
+                    getSupportFragmentManager().beginTransaction().
+                            remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
                 }
-//                if (mTwoPane && getSupportFragmentManager().findFragmentByTag(RECIPE_STEP_TAG) != null){
-//                    getSupportFragmentManager().beginTransaction().
-//                            remove(getSupportFragmentManager().findFragmentById(R.id.media_description_tablet)).commit();
-//                } else if (getSupportFragmentManager().getBackStackEntryCount() == 1){
-//                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//                }
+                if (getSupportFragmentManager().getBackStackEntryCount() == 1){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);}
                 return true; //Notice you must returning true here
 
             default:
